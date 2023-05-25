@@ -1,0 +1,14 @@
+D:\EFRepository\bin\Debug\net6.0\EFRepository.deps.json
+D:\EFRepository\bin\Debug\net6.0\EFRepository.runtimeconfig.json
+D:\EFRepository\bin\Debug\net6.0\EFRepository.dll
+D:\EFRepository\bin\Debug\net6.0\EFRepository.pdb
+D:\EFRepository\obj\Debug\net6.0\EFRepository.csproj.AssemblyReference.cache
+D:\EFRepository\obj\Debug\net6.0\EFRepository.GeneratedMSBuildEditorConfig.editorconfig
+D:\EFRepository\obj\Debug\net6.0\EFRepository.AssemblyInfoInputs.cache
+D:\EFRepository\obj\Debug\net6.0\EFRepository.AssemblyInfo.cs
+D:\EFRepository\obj\Debug\net6.0\EFRepository.csproj.CoreCompileInputs.cache
+D:\EFRepository\obj\Debug\net6.0\EFRepository.dll
+D:\EFRepository\obj\Debug\net6.0\refint\EFRepository.dll
+D:\EFRepository\obj\Debug\net6.0\EFRepository.pdb
+D:\EFRepository\obj\Debug\net6.0\EFRepository.genruntimeconfig.cache
+D:\EFRepository\obj\Debug\net6.0\ref\EFRepository.dll
