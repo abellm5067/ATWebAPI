@@ -1,4 +1,5 @@
 using ATWebAPI;
+using ATWebAPI.CustomMiddlewares;
 using EFRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -42,4 +43,5 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
+app.UseMiddleware<CustomExceptionMiddleware>();
 app.Run();

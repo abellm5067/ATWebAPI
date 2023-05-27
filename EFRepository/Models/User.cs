@@ -32,7 +32,9 @@ namespace EFRepository.Models
         public string AlternateContact { get; set; }
       
         public string Password { get; set; }
-      
+        public string? PasswordHash { get; set; }
+        public string? PasswordSalt { get; set; }
+
         public DateTime CreatedDate { get; set; }
       
         public bool IsActive { get; set; }

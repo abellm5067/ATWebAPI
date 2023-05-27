@@ -1,17 +1,16 @@
-﻿using ATWebAPI.Models;
-using ATWebAPI.Services.Interfaces;
+﻿using ATWebAPI.Facade.Interface;
+using EFRepository.DTO;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ATWebAPI.Services
+namespace ATWebAPI.Facade
 {
-    public class TokenService: ITokenService
+    public class TokenBusiness : ITokenBusiness
     {
 
-        public string GenerateToken(User user, string[] roles)
+        public string GenerateToken(UserDTO user, string[] roles)
         {
 
             var issuer = AppConfig.Issuer;
@@ -22,7 +21,7 @@ namespace ATWebAPI.Services
             claims.Add(new Claim("Id", Guid.NewGuid().ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.UserName));
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.UserName));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             foreach (string role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));

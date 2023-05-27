@@ -1,4 +1,5 @@
-﻿using EFRepository.Models;
+﻿using EFRepository.DTO;
+using EFRepository.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,8 @@ namespace EFRepository.Services.Interace
         Task Add(User user);
         Task Update(User user);
         Task Delete(int id);
-        Task<IList<User>> GetAll();
-        Task<User> GetUser(int Id);
-        Task<User> GetUser(string UserName);
+        Task<IList<User>> Get();
+        Task<User> Get(int Id);
+        Task<User> Get(string UserName);
     }
 }

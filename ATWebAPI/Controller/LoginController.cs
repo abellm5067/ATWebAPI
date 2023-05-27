@@ -1,7 +1,6 @@
-﻿using ATWebAPI.Models;
-using ATWebAPI.Services.Interfaces;
+﻿using ATWebAPI.Facade.Interface;
+using EFRepository.DTO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ATWebAPI.Controller
@@ -10,28 +9,30 @@ namespace ATWebAPI.Controller
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly ITokenService _tokenService;
+        private readonly ITokenBusiness _tokenService;
         private readonly ILogger<LoginController> _logger;
-        public LoginController(ITokenService tokenService, ILogger<LoginController> logger)
+        private readonly IUserBusiness _userBusiness;
+        public LoginController(ITokenBusiness tokenService, ILogger<LoginController> logger, IUserBusiness userBusiness)
         {
             _tokenService = tokenService;
             _logger = logger;
+            _userBusiness = userBusiness;
         }
         [HttpPost]
-        [Route("api/[controller]/GetToken")]
-        public async Task<IActionResult> GetToken(User user)
+        [Route("api/[controller]/Get")]
+        public async Task<IActionResult> Get(LoginDTO user)
         {
-            _logger.LogInformation("Seri Log is Working");
-            if (user is not null && user.UserName == "Anil" && user.Password == "admin")
+            if (await _userBusiness.ValidateUser(user))
             {
-                string token = _tokenService.GenerateToken(user,new string[] { "admin"});
+                var useInfo = await _userBusiness.Get(user.UserName);
+                string token = _tokenService.GenerateToken(useInfo, new string[] { "admin"});
                 return Ok(token);
             }
-            if (user is not null && user.UserName == "Anil" && user.Password == "user")
-            {
-                string token = _tokenService.GenerateToken(user, new string[] { "user" });
-                return Ok(token);
-            }
+            //if (await _userBusiness.ValidateUser(user))
+            //{
+            //    string token = _tokenService.GenerateToken(user, new string[] { "user" });
+            //    return Ok(token);
+            //}
             return (IActionResult)Results.Unauthorized();
         }
         [Authorize(Roles ="admin")]

@@ -1,9 +1,9 @@
 ﻿using ATWebAPI.Facade.Interface;
-using ATWebAPI.Models;
 using AutoMapper;
 using EFRepository.DTO;
 using EFRepository.Models;
 using EFRepository.Services.Interace;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using User = EFRepository.Models.User;
 
@@ -25,6 +25,8 @@ namespace ATWebAPI.Facade
             {
                 if (user == null) throw new ArgumentNullException("user");
                 var userInfo = _mapper.Map<UserDTO, User>(user);
+                userInfo.PasswordSalt = ATSingleton.Instance.GenerateSalt();
+                userInfo.PasswordHash = ATSingleton.Instance.ComputeHash(user.Password, userInfo.PasswordSalt, 3);
                 await _userService.Add(userInfo);
             }
             catch (Exception)
@@ -40,9 +42,9 @@ namespace ATWebAPI.Facade
             await _userService.Delete(id);
         }
 
-        public async Task<IList<UserDTO>> GetAll()
+        public async Task<IList<UserDTO>> Get()
         {
-            var get = await _userService.GetAll();
+            var get = await _userService.Get();
             var users = (from g in get
                          select new UserDTO
                          {
@@ -58,7 +60,7 @@ namespace ATWebAPI.Facade
                              Gender = g.Gender,
                              IsActive = g.IsActive,
                              LastName = g.LastName,
-                             UserName = g.UserName
+                             UserName = g.UserName,
                 MidleNameName = g.MidleNameName,
                              State = g.State,
                              Zip = g.Zip
@@ -66,9 +68,9 @@ namespace ATWebAPI.Facade
             return users.ToList();
         }
 
-        public async Task<UserDTO> GetUser(int id)
+        public async Task<UserDTO> Get(int id)
         {
-            var get = await _userService.GetUser(id);
+            var get = await _userService.Get(id);
             var user = new UserDTO
             {
                 Id = get.Id,
@@ -91,11 +93,11 @@ namespace ATWebAPI.Facade
             return user;
         }
 
-        public async Task<UserDTO> GetUser(string userName)
+        public async Task<UserDTO> Get(string userName)
         {
             try
             {
-                var get = await _userService.GetUser(userName);
+                var get = await _userService.Get(userName);
                 var user = new UserDTO
                 {
                     Id = get.Id,
@@ -117,10 +119,10 @@ namespace ATWebAPI.Facade
                 };
                 return user;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw ex;
+                throw;
             }
            
         }
@@ -138,7 +140,22 @@ namespace ATWebAPI.Facade
 
                 throw ex;
             }
-            throw new NotImplementedException();
+        }
+
+        public async Task<bool> ValidateUser(LoginDTO loginDTO)
+        {
+            try
+            {
+                if (loginDTO == null) throw new ArgumentNullException("Please enter valid details");
+                var user = await _userService.Get(loginDTO.UserName ?? "");
+                string? passwordHash = ATSingleton.Instance.ComputeHash(loginDTO.Password, user.PasswordSalt, 3)??"";
+                if (user.PasswordHash != passwordHash) throw new Exception("Username or password did not match.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

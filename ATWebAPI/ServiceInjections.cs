@@ -1,6 +1,4 @@
-﻿using ATWebAPI.Services;
-using ATWebAPI.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -40,7 +38,7 @@ namespace ATWebAPI
             });
             
             serviceCollection.AddAuthorization();
-            serviceCollection.AddScoped<ITokenService, TokenService>();
+            serviceCollection.AddScoped<ITokenBusiness, TokenBusiness>();
             serviceCollection.AddScoped<IUserService, UserService>();
             serviceCollection.AddScoped<IUserBusiness, UserBusiness>();
             serviceCollection.AddControllers();
