@@ -19,7 +19,7 @@ namespace ATWebAPI.Controller
 
         }
         [HttpGet]
-        [Route("api/[controller]/Get")]
+        [Route("Get")]
         public async Task<IActionResult> Get()
         {
             var users = await _userBusiness.Get();
@@ -27,15 +27,15 @@ namespace ATWebAPI.Controller
 
         }
         [HttpGet]
-        [Route("api/[controller]/Get/{id}")]
-        public async Task<IActionResult> Get(int id)
+        [Route("Get/{id}")]
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
             var users = await _userBusiness.Get(id);
             return Ok(users);
         }
         [HttpGet]
-        [Route("api/[controller]/Get/{userName}")]
-        public async Task<IActionResult> Get(string userName)
+        [Route("GetUser/{userName}")]
+        public async Task<IActionResult> GetUser(string userName)
         {
             var users = await _userBusiness.Get(userName);
             return Ok(users);

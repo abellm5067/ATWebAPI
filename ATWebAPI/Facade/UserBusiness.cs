@@ -25,7 +25,7 @@ public class UserBusiness : IUserBusiness
         userInfo.PasswordSalt = ATSingleton.Instance.GenerateSalt();
         userInfo.PasswordHash = ATSingleton.Instance.ComputeHash(userDTO.Password, userInfo.PasswordSalt, 3);
         await _userService.Add(userInfo);
-        ATSingleton.Instance.SendEmail(new List<string> { userDTO.Email }, "Password", $"Please find the password below{Environment.NewLine + userDTO.Password}");
+        ATSingleton.Instance.SendEmail(new List<string> { userDTO.Email }, "Password", $"Please find the password below {Environment.NewLine + userDTO.Password}");
     }
 
     public async Task Delete(int id)
