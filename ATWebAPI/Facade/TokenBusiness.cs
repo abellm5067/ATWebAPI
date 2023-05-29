@@ -5,11 +5,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ATWebAPI.Facade
-{
+namespace ATWebAPI.Facade;
     public class TokenBusiness : ITokenBusiness
     {
-
         public string GenerateToken(UserDTO user, string[] roles)
         {
 
@@ -43,4 +41,3 @@ namespace ATWebAPI.Facade
             return stringToken;
         }
     }
-}

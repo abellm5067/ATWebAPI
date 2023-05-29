@@ -6,15 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFRepository.Services.Interace
+namespace EFRepository.Services.Interace;
+public interface IUserService : ICommon<User>
 {
-    public interface IUserService
-    {
-        Task Add(User user);
-        Task Update(User user);
-        Task Delete(int id);
-        Task<IList<User>> Get();
-        Task<User> Get(int Id);
-        Task<User> Get(string UserName);
-    }
+    Task<User> Get(string UserName);
+    Task<string> GetUserByEmail(string email);
 }

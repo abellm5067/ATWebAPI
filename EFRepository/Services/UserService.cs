@@ -40,7 +40,13 @@ namespace EFRepository.Services
             User _user = await context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
             return _user;
         }
-
+        public async Task<string> GetUserByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("user");
+            using var context = new ATWebDbContext();
+            string _userEmail = await context.Users.Where(x => x.Email==email).Select(x=>x.UserName).FirstOrDefaultAsync();
+            return _userEmail;
+        }
         public async Task<User> Get(string userName)
         {
             if (string.IsNullOrEmpty(userName)) throw new ArgumentNullException("user");
@@ -70,6 +76,8 @@ namespace EFRepository.Services
             userinfo.MidleNameName = user.MidleNameName;
             userinfo.State = user.State;
             userinfo.Zip = user.Zip;
+            userinfo.PasswordSalt=user.PasswordSalt;
+            userinfo.PasswordHash = user.PasswordHash;
             await context.SaveChangesAsync();
         }
     }

@@ -16,6 +16,7 @@ namespace ATWebAPI
         {
             IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
             serviceCollection.AddSingleton(mapper);
+            serviceCollection.AddMemoryCache();
             serviceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             serviceCollection.AddAuthentication(options =>
             {
@@ -39,6 +40,7 @@ namespace ATWebAPI
             
             serviceCollection.AddAuthorization();
             serviceCollection.AddScoped<ITokenBusiness, TokenBusiness>();
+            serviceCollection.AddScoped<ILoginBusiness, LoginBusiness>();
             serviceCollection.AddScoped<IUserService, UserService>();
             serviceCollection.AddScoped<IUserBusiness, UserBusiness>();
             serviceCollection.AddControllers();

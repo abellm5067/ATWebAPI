@@ -41,6 +41,7 @@ namespace ATWebAPI.Controller
             return Ok(users);
         }
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Add([FromBody] UserDTO user)
         {
             await _userBusiness.Add(user);

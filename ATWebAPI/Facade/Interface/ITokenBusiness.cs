@@ -1,9 +1,7 @@
 ﻿using EFRepository.DTO;
 
-namespace ATWebAPI.Facade.Interface
+namespace ATWebAPI.Facade.Interface;
+public interface ITokenBusiness
 {
-    public interface ITokenBusiness
-    {
-        string GenerateToken(UserDTO user, string[] roles);
-    }
+    string GenerateToken(UserDTO user, string[] roles);
 }
