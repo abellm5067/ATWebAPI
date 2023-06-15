@@ -5,61 +5,90 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EFRepository.Services
 {
+    //// <summary>
+    //// This is service where we manipulate the user
+    //// </summary>
     public class UserService : IUserService
     {
+        private readonly IStorage<User> _storage;
+        public UserService(IStorage<User> storage)
+        {
+            _storage = storage;
+        }
+
+        //// <summary>
+        //// Add the user if it has data other wise throw exception
+        //// </summary>
         public async Task Add(User user)
         {
-            if (user == null) throw new ArgumentNullException("user");
+            if (user == null) throw new ArgumentNullException("Invalid user info");
 
-            using var context = new ATWebDbContext();
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
+            await _storage.Insert(user);
+            await _storage.SaveChangesAsync();
 
         }
+
+        //// <summary>
+        //// Delete the user if it has data other wise throw exception
+        //// </summary>
         public async Task Delete(int id)
         {
-            if (id == 0) throw new ArgumentNullException("user");
-            using var context = new ATWebDbContext();
-            User _user = await context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
-            if (_user is null) throw new Exception("User Not found");
-            context.Users.Remove(_user);
-            context.SaveChanges();
+            var seller = await _storage.Get(id);
+            if (seller is null) throw new ArgumentNullException("Invalid user info");
+            _storage.Delete(seller);
+            await _storage.SaveChangesAsync();
         }
 
+        //// <summary>
+        //// Get all users
+        //// </summary>
         public async Task<IList<User>> Get()
         {
-            using var context = new ATWebDbContext();
-            IEnumerable<User> users = await context.Users.ToListAsync();
-            return users.ToList();
+            return await _storage.Get();
         }
 
+        //// <summary>
+        //// Get user by id
+        //// </summary>
         public async Task<User> Get(int id)
         {
             if (id == 0) throw new ArgumentNullException("user");
-            using var context = new ATWebDbContext();
-            User _user = await context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
-            return _user;
+
+            return await _storage.Get(id);
         }
+
+        //// <summary>
+        //// Get user by email
+        //// </summary>
         public async Task<string> GetUserByEmail(string email)
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("user");
+
             using var context = new ATWebDbContext();
-            string _userEmail = await context.Users.Where(x => x.Email==email).Select(x=>x.UserName).FirstOrDefaultAsync();
+            string _userEmail = await context.Users.Where(x => x.Email == email).Select(x => x.UserName).FirstOrDefaultAsync();
             return _userEmail;
         }
+
+        //// <summary>
+        //// Get user by username
+        //// </summary>
         public async Task<User> Get(string userName)
         {
             if (string.IsNullOrEmpty(userName)) throw new ArgumentNullException("user");
+
             using var context = new ATWebDbContext();
             User _user = await context.Users.Where(x => x.UserName == userName).FirstOrDefaultAsync();
             return _user;
         }
 
+        //// <summary>
+        //// update user by email
+        //// </summary>
         public async Task Update(User user)
         {
             if (user == null) throw new ArgumentNullException("user");
-            using var context = new ATWebDbContext();
-            User userinfo = await context.Users.Where(x => x.Id == user.Id).FirstOrDefaultAsync();
+
+            User userinfo = await _storage.Get(user.Id);
             if (userinfo is null) throw new Exception("User Not found");
             userinfo.Address = user.Address;
             userinfo.Address2 = user.Address2;
@@ -76,9 +105,10 @@ namespace EFRepository.Services
             userinfo.MidleNameName = user.MidleNameName;
             userinfo.State = user.State;
             userinfo.Zip = user.Zip;
-            userinfo.PasswordSalt=user.PasswordSalt;
+            userinfo.PasswordSalt = user.PasswordSalt;
             userinfo.PasswordHash = user.PasswordHash;
-            await context.SaveChangesAsync();
+            _storage.Update(userinfo);
+            await _storage.SaveChangesAsync();
         }
     }
 }

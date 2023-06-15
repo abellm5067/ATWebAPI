@@ -36,6 +36,7 @@ public class CustomExceptionMiddleware
         var response = context.Response;
 
         var errorResponse = new ErrorResponse
+
         {
             Success = false
         };

@@ -7,6 +7,12 @@ using AutoMapper;
 using EFRepository.Services.Interace;
 using ATWebAPI.Facade;
 using ATWebAPI.Facade.Interface;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using FluentValidation;
+using EFRepository.DTO;
+using ATWebAPI.Validations;
+using System.Reflection;
 
 namespace ATWebAPI
 {
@@ -39,11 +45,13 @@ namespace ATWebAPI
             });
             
             serviceCollection.AddAuthorization();
+            serviceCollection.AddScoped(typeof(IStorage<>), typeof(Storage<>));
             serviceCollection.AddScoped<ITokenBusiness, TokenBusiness>();
             serviceCollection.AddScoped<ILoginBusiness, LoginBusiness>();
             serviceCollection.AddScoped<IUserService, UserService>();
             serviceCollection.AddScoped<IUserBusiness, UserBusiness>();
-            serviceCollection.AddControllers();
+            serviceCollection.AddTransient<IValidator<UserDTO>, UserValidator>();
+            serviceCollection.AddControllers().AddFluentValidation(c=>c.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
             serviceCollection.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AT API", Version = "v1" });
