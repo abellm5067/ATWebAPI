@@ -1,16 +1,12 @@
 ﻿using EFRepository.Models;
 using EFRepository.Services.Interace;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EFRepository.Services
 {
-    internal class CategoryService : ICategoryService
+    //// <summary>
+    //// This is service where we manipulate the catagory
+    //// </summary>
+    public class CategoryService : ICategoryService
     {
         private IStorage<Category> _storage;
         public CategoryService(IStorage<Category> storage)
@@ -19,7 +15,7 @@ namespace EFRepository.Services
         }
 
         //// <summary>
-        //// Add the catagory if it has data other wise throw exception
+        //// insert catagory
         //// </summary>
         public async Task Add(Category entity)
         {
@@ -30,13 +26,14 @@ namespace EFRepository.Services
         }
 
         //// <summary>
-        //// Delete the catagory if it has data other wise throw exception
+        //// Delete catagory by id
         //// </summary>
         public async Task Delete(int id)
         {
-            if (id <= 0) throw new ArgumentException($"{nameof(id)} should be greater than xero");
+            if (id <= 0) throw new ArgumentException($"invalid category id");
+
             var seller = await _storage.Get(id);
-            if (seller.Id>0)
+            if (seller.Id > 0)
             {
                 _storage.Delete(seller);
                 await _storage.SaveChangesAsync();
@@ -52,25 +49,27 @@ namespace EFRepository.Services
         }
 
         //// <summary>
-        //// Get catagory by id if it does not match throw the exceptio
+        //// Get catagory by id
         //// </summary>
         public async Task<Category> Get(int id)
         {
-            if (id <=0) throw new ArgumentNullException("id should be greter than 0");
-            return await _storage.Get(id);
+            if (id <= 0) throw new ArgumentNullException("invalid category id");
+            var category= await _storage.Get(id);
+            return category is null ? throw new Exception("category not found"):category;
         }
 
         //// <summary>
-        //// update the catagory if it has data other wise throw exception
+        //// update the catagory
         //// </summary>
         public async Task Update(Category entity)
         {
+            if (entity is null) throw new ArgumentNullException("invalid category id");
+
             var category = await _storage.Get(entity.Id);
-            if (category is null)
-            {
-                _storage.Update(entity);
-                await _storage.SaveChangesAsync();
-            }
+            if (category is null) throw new Exception("category not found");
+
+            _storage.Update(entity);
+            await _storage.SaveChangesAsync();
         }
     }
 }

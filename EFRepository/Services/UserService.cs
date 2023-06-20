@@ -1,5 +1,4 @@
-﻿using EFRepository.DTO;
-using EFRepository.Models;
+﻿using EFRepository.Models;
 using EFRepository.Services.Interace;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,7 @@ namespace EFRepository.Services
         }
 
         //// <summary>
-        //// Add the user if it has data other wise throw exception
+        //// Insert user
         //// </summary>
         public async Task Add(User user)
         {
@@ -29,12 +28,12 @@ namespace EFRepository.Services
         }
 
         //// <summary>
-        //// Delete the user if it has data other wise throw exception
+        //// Delete user by id
         //// </summary>
         public async Task Delete(int id)
         {
             var seller = await _storage.Get(id);
-            if (seller is null) throw new ArgumentNullException("Invalid user info");
+            if (seller is null) throw new Exception("Invalid user info");
             _storage.Delete(seller);
             await _storage.SaveChangesAsync();
         }
@@ -52,9 +51,10 @@ namespace EFRepository.Services
         //// </summary>
         public async Task<User> Get(int id)
         {
-            if (id == 0) throw new ArgumentNullException("user");
+            if (id == 0) throw new ArgumentException("user");
 
-            return await _storage.Get(id);
+            var user = await _storage.Get(id);
+            return user is null ? throw new Exception("user not found") : user;
         }
 
         //// <summary>
@@ -62,11 +62,11 @@ namespace EFRepository.Services
         //// </summary>
         public async Task<string> GetUserByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("user");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentException("user");
 
             using var context = new ATWebDbContext();
-            string _userEmail = await context.Users.Where(x => x.Email == email).Select(x => x.UserName).FirstOrDefaultAsync();
-            return _userEmail;
+            string userEmail = await context.Users.Where(x => x.Email == email).Select(x => x.UserName).FirstOrDefaultAsync();
+            return userEmail;
         }
 
         //// <summary>
@@ -77,19 +77,19 @@ namespace EFRepository.Services
             if (string.IsNullOrEmpty(userName)) throw new ArgumentNullException("user");
 
             using var context = new ATWebDbContext();
-            User _user = await context.Users.Where(x => x.UserName == userName).FirstOrDefaultAsync();
-            return _user;
+            User user = await context.Users.Where(x => x.UserName == userName).FirstOrDefaultAsync();
+            return user is null ? throw new Exception("user not found") : user;
         }
 
         //// <summary>
-        //// update user by email
+        //// update user
         //// </summary>
         public async Task Update(User user)
         {
             if (user == null) throw new ArgumentNullException("user");
 
             User userinfo = await _storage.Get(user.Id);
-            if (userinfo is null) throw new Exception("User Not found");
+            if (userinfo is null) throw new Exception("user not found");
             userinfo.Address = user.Address;
             userinfo.Address2 = user.Address2;
             userinfo.AlternateContact = user.AlternateContact;

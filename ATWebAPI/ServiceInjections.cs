@@ -8,7 +8,6 @@ using EFRepository.Services.Interace;
 using ATWebAPI.Facade;
 using ATWebAPI.Facade.Interface;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using FluentValidation;
 using EFRepository.DTO;
 using ATWebAPI.Validations;
@@ -49,6 +48,8 @@ namespace ATWebAPI
             serviceCollection.AddScoped<ITokenBusiness, TokenBusiness>();
             serviceCollection.AddScoped<ILoginBusiness, LoginBusiness>();
             serviceCollection.AddScoped<IUserService, UserService>();
+            serviceCollection.AddScoped<IProductService, ProductService>();
+            serviceCollection.AddScoped<IOrderService, OrderService>();
             serviceCollection.AddScoped<IUserBusiness, UserBusiness>();
             serviceCollection.AddTransient<IValidator<UserDTO>, UserValidator>();
             serviceCollection.AddControllers().AddFluentValidation(c=>c.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
